@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="rng.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-12 Gen & 7 Min Timer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: sans-saerif; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            cursor: none; /* Mouse hidden by default */
+            background-color: #f0f2f5;
+        }
+
+        /* This class forces the mouse to show */
+        body.show-cursor { 
+            cursor: default !important; 
+        }
+        body.show-cursor button { 
+            cursor: pointer !important; 
+        }
+
+        .half { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+        }
+
+        #left { background-color: #ffffff; border-right: 4px solid #000; }
+        #display { font-size: 250px; font-weight: bold; color: #000; margin: 20px 0; }
+
+        #right { background-color: #000; color: #fff; }
+        #timer-display { font-size: 180px; font-family: monospace; margin: 20px 0; }
+
+        button { 
+            padding: 30px 60px; 
+            font-size: 30px; 
+            font-weight: bold; 
+            border-radius: 15px;
+            border: 4px solid #000;
+            background: #eee;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        #right button { border-color: #fff; background: #333; color: #fff; }
+
+        .label { font-size: 24px; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div id="left" class="half">
+        <div class="label">Number (Spacebar)</div>
+        <div id="display">?</div>
+        <button onclick="pickNumber()">GENERATE</button>
+    </div>
+
+    <div id="right" class="half">
+        <div class="label">7 Minute Timer</div>
+        <div id="timer-display">07:00</div>
+        <div>
+            <button onclick="startTimer()">START</button>
+            <button onclick="resetTimer()" style="margin-left:10px;">RESET</button>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // 1. SOUND LOGIC
+        function playFinishSound() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1);
+        }
+
+        // 2. GENERATOR LOGIC
+        function pickNumber() {
+            var num = Math.floor(Math.random() * 12) + 1;
+            document.getElementById('display').innerHTML = num;
+        }
+
+        // 3. RELIABLE KEYBOARD CONTROLS
+        // We use "true" as the last parameter to capture the event immediately
+        window.addEventListener('keydown', function(e) {
+            // Spacebar picks number
+            if (e.code === "Space") {
+                e.preventDefault();
+                pickNumber();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            }
+            // Check for Shift key specifically
+            if (e.key === "Shift") {
+                body.classList.add('show-cursor');
+            }
+        }, true);
+
+        window.addEventListener('keyup', function(e) {
+            if (e.key === "Shift") {
+                body.classList.remove('show-cursor');
+            }
+        }, true);
+
+        // 4. TIMER LOGIC
+        let timeLeft = 420; 
+        let timerId = null;
+
+        function updateDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer-display').innerHTML = 
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerId) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            timerId = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timerId);
+                    timerId = null;
+                    playFinishSound();
+                    alert("Time Up!");
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 420;
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
