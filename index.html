@@ -6,88 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1-12 Gen & 7 Min Timer</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: sans-serif; /* Fixed the typo here */
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: sans-saerif; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
             cursor: none; /* Mouse hidden by default */
             background-color: #f0f2f5;
         }
 
         /* This class forces the mouse to show */
-        body.show-cursor {
-            cursor: default !important;
+        body.show-cursor { 
+            cursor: default !important; 
+        }
+        body.show-cursor button { 
+            cursor: pointer !important; 
         }
 
-        body.show-cursor button {
-            cursor: pointer !important;
-        }
-
-        .half {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .half { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
             text-align: center;
         }
 
-        #left {
-            background-color: #ffffff;
-            border-right: 4px solid #000;
-        }
+        #left { background-color: #ffffff; border-right: 4px solid #000; }
+        #display { font-size: 250px; font-weight: bold; color: #000; margin: 20px 0; }
 
-        #display {
-            font-size: 250px;
-            font-weight: bold;
-            color: #000;
-            margin: 20px 0;
-        }
+        #right { background-color: #000; color: #fff; }
+        #timer-display { font-size: 180px; font-family: monospace; margin: 20px 0; }
 
-        #right {
-            background-color: #000;
-            color: #fff;
-        }
-
-        #timer-display {
-            font-size: 180px;
-            font-family: monospace;
-            margin: 20px 0;
-        }
-
-        button {
-            padding: 30px 60px;
-            font-size: 30px;
-            font-weight: bold;
+        button { 
+            padding: 30px 60px; 
+            font-size: 30px; 
+            font-weight: bold; 
             border-radius: 15px;
             border: 4px solid #000;
             background: #eee;
             transition: transform 0.1s;
-            font-family: inherit; /* Makes buttons use the sans-serif font too */
         }
+        button:active { transform: scale(0.95); }
+        #right button { border-color: #fff; background: #333; color: #fff; }
 
-        button:active {
-            transform: scale(0.95);
-        }
-
-        #right button {
-            border-color: #fff;
-            background: #333;
-            color: #fff;
-        }
-
-        .label {
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+        .label { font-size: 24px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -110,7 +75,7 @@
     <script>
         const body = document.body;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
+        
         // 1. SOUND LOGIC
         function playFinishSound() {
             const osc = audioCtx.createOscillator();
@@ -132,6 +97,7 @@
         }
 
         // 3. RELIABLE KEYBOARD CONTROLS
+        // We use "true" as the last parameter to capture the event immediately
         window.addEventListener('keydown', function(e) {
             // Spacebar picks number
             if (e.code === "Space") {
@@ -152,7 +118,7 @@
         }, true);
 
         // 4. TIMER LOGIC
-        let timeLeft = 420;
+        let timeLeft = 420; 
         let timerId = null;
 
         function updateDisplay() {
@@ -165,7 +131,6 @@
         function startTimer() {
             if (timerId) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             timerId = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
@@ -174,7 +139,9 @@
                     clearInterval(timerId);
                     timerId = null;
                     playFinishSound();
-                    alert("Time Up!");
+                    setTimeout(() => {
+                        alert("Time Up!");
+                    }, 500);
                 }
             }, 1000);
         }
