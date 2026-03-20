@@ -4,154 +4,465 @@
     <link rel="icon" type="image/x-icon" href="rng.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A random number generator (1-12) and 7-minute timer application">
+    <meta name="theme-color" content="#f0f2f5">
+    <meta property="og:title" content="1-12 Gen & 7 Min Timer">
+    <meta property="og:description" content="A random number generator and timer tool">
     <title>1-12 Gen & 7 Min Timer</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            font-family: sans-serif; 
-            display: flex; 
-            height: 100vh; 
-            overflow: hidden; 
-            cursor: none; /* Mouse hidden by default */
-            background-color: #f0f2f5;
+        :root {
+            --color-primary: #000;
+            --color-secondary: #fff;
+            --color-bg-light: #f0f2f5;
+            --color-bg-dark: #000;
+            --color-text-light: #000;
+            --color-text-dark: #fff;
+            --color-button-bg: #eee;
+            --color-button-border: #000;
+            --color-button-hover: #ddd;
+            --border-radius: 15px;
+            --transition-speed: 0.1s;
         }
 
-        /* This class forces the mouse to show */
-        body.show-cursor { 
-            cursor: default !important; 
-        }
-        body.show-cursor button { 
-            cursor: pointer !important; 
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg-light: #1a1a1a;
+                --color-bg-dark: #0a0a0a;
+                --color-text-light: #fff;
+                --color-button-bg: #333;
+                --color-button-hover: #444;
+            }
         }
 
-        .half { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            cursor: none;
+            background-color: var(--color-bg-light);
+            color: var(--color-text-light);
+        }
+
+        body.show-cursor {
+            cursor: default !important;
+        }
+
+        body.show-cursor button {
+            cursor: pointer !important;
+        }
+
+        main {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .half {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            padding: 20px;
         }
 
-        #left { background-color: #ffffff; border-right: 4px solid #000; }
-        #display { font-size: 250px; font-weight: bold; color: #000; margin: 20px 0; }
-
-        #right { background-color: #000; color: #fff; }
-        #timer-display { font-size: 180px; font-family: monospace; margin: 20px 0; }
-
-        button { 
-            padding: 30px 60px; 
-            font-size: 30px; 
-            font-weight: bold; 
-            border-radius: 15px;
-            border: 4px solid #000;
-            background: #eee;
-            transition: transform 0.1s;
+        #left {
+            background-color: var(--color-bg-light);
+            border-right: 4px solid var(--color-primary);
         }
-        button:active { transform: scale(0.95); }
-        #right button { border-color: #fff; background: #333; color: #fff; }
 
-        .label { font-size: 24px; font-weight: bold; text-transform: uppercase; }
+        #display {
+            font-size: clamp(120px, 25vw, 250px);
+            font-weight: bold;
+            color: var(--color-text-light);
+            margin: 20px 0;
+            line-height: 1;
+        }
+
+        #right {
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-dark);
+        }
+
+        #timer-display {
+            font-size: clamp(80px, 20vw, 180px);
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            line-height: 1;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 30px 60px;
+            font-size: clamp(16px, 3vw, 30px);
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            border: 4px solid var(--color-button-border);
+            background: var(--color-button-bg);
+            color: var(--color-text-light);
+            transition: transform var(--transition-speed), background-color var(--transition-speed);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--color-button-hover);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        #right button {
+            border-color: var(--color-text-dark);
+            background: #333;
+            color: var(--color-text-dark);
+        }
+
+        #right button:hover {
+            background-color: #444;
+        }
+
+        .label {
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            font-size: 14px;
+            z-index: 1000;
+            background: var(--color-button-bg);
+            border-color: var(--color-button-border);
+            color: var(--color-text-light);
+        }
+
+        #right #fullscreen-btn {
+            background: #333;
+            border-color: var(--color-text-dark);
+            color: var(--color-text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .half {
+                padding: 10px;
+            }
+
+            #display {
+                margin: 15px 0;
+            }
+
+            #timer-display {
+                margin: 15px 0;
+            }
+
+            button {
+                padding: 20px 40px;
+            }
+
+            .button-container {
+                gap: 5px;
+            }
+
+            #left,
+            #right {
+                border-right: none;
+                border-bottom: 4px solid var(--color-primary);
+            }
+
+            main {
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <main>
+        <section id="left" class="half" aria-label="Number Generator">
+            <div class="label">Number (Spacebar)</div>
+            <div id="display" aria-live="polite" aria-atomic="true">?</div>
+            <button onclick="pickNumber()" aria-label="Generate a random number from 1 to 12">GENERATE</button>
+        </section>
 
-    <div id="left" class="half">
-        <div class="label">Number (Spacebar)</div>
-        <div id="display">?</div>
-        <button onclick="pickNumber()">GENERATE</button>
-    </div>
-
-    <div id="right" class="half">
-        <div class="label">7 Minute Timer</div>
-        <div id="timer-display">07:00</div>
-        <div>
-            <button onclick="startTimer()">START</button>
-            <button onclick="resetTimer()" style="margin-left:10px;">RESET</button>
-        </div>
-    </div>
+        <section id="right" class="half" aria-label="Timer">
+            <div class="label">7 Minute Timer</div>
+            <div id="timer-display" aria-live="polite" aria-atomic="true">07:00</div>
+            <div class="button-container">
+                <button onclick="startTimer()" aria-label="Start the timer">START</button>
+                <button onclick="resetTimer()" aria-label="Reset the timer to 7 minutes">RESET</button>
+            </div>
+            <button id="fullscreen-btn" onclick="toggleFullscreen()" aria-label="Toggle fullscreen mode">⛶ Fullscreen</button>
+        </section>
+    </main>
 
     <script>
-        const body = document.body;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // 1. SOUND LOGIC
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            timerDuration: 420, // 7 minutes in seconds
+            timerInterval: 1000, // 1 second
+            soundFrequency: 440, // Hz
+            soundDuration: 1, // seconds
+            soundGain: 0.1,
+        };
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        const state = {
+            timeLeft: CONFIG.timerDuration,
+            timerId: null,
+            audioCtx: null,
+            isFullscreen: false,
+        };
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function initAudioContext() {
+            try {
+                if (!state.audioCtx) {
+                    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            } catch (error) {
+                console.error('AudioContext initialization failed:', error);
+            }
+        }
+
+        // Initialize audio context on first user interaction
+        document.addEventListener('click', initAudioContext);
+        document.addEventListener('keydown', initAudioContext);
+
+        // Restore timer state from localStorage
+        window.addEventListener('load', () => {
+            const savedState = localStorage.getItem('timerState');
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+                    state.timeLeft = parsed.timeLeft || CONFIG.timerDuration;
+                    updateDisplay();
+                } catch (error) {
+                    console.error('Failed to restore timer state:', error);
+                }
+            }
+        });
+
+        // Save timer state periodically
+        setInterval(() => {
+            localStorage.setItem('timerState', JSON.stringify({
+                timeLeft: state.timeLeft,
+                timestamp: Date.now(),
+            }));
+        }, 1000);
+
+        // ============================================
+        // SOUND LOGIC
+        // ============================================
         function playFinishSound() {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 1);
+            if (!state.audioCtx) {
+                console.warn('AudioContext not available for sound playback');
+                return;
+            }
+
+            try {
+                const osc = state.audioCtx.createOscillator();
+                const gain = state.audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(state.audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(CONFIG.soundFrequency, state.audioCtx.currentTime);
+                gain.gain.setValueAtTime(CONFIG.soundGain, state.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, state.audioCtx.currentTime + CONFIG.soundDuration);
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + CONFIG.soundDuration);
+            } catch (error) {
+                console.error('Error playing finish sound:', error);
+            }
         }
 
-        // 2. GENERATOR LOGIC
+        // ============================================
+        // NUMBER GENERATOR LOGIC
+        // ============================================
         function pickNumber() {
-            var num = Math.floor(Math.random() * 12) + 1;
-            document.getElementById('display').innerHTML = num;
+            const num = Math.floor(Math.random() * 12) + 1;
+            const displayElement = document.getElementById('display');
+            displayElement.textContent = num;
+
+            // Save to localStorage
+            localStorage.setItem('lastNumber', num);
         }
 
-        // 3. RELIABLE KEYBOARD CONTROLS
-        // We use "true" as the last parameter to capture the event immediately
-        window.addEventListener('keydown', function(e) {
-            // Spacebar picks number
-            if (e.code === "Space") {
-                e.preventDefault();
-                pickNumber();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-            }
-            // Check for Shift key specifically
-            if (e.key === "Shift") {
-                body.classList.add('show-cursor');
-            }
-        }, true);
-
-        window.addEventListener('keyup', function(e) {
-            if (e.key === "Shift") {
-                body.classList.remove('show-cursor');
-            }
-        }, true);
-
-        // 4. TIMER LOGIC
-        let timeLeft = 420; 
-        let timerId = null;
-
+        // ============================================
+        // DISPLAY LOGIC
+        // ============================================
         function updateDisplay() {
-            const m = Math.floor(timeLeft / 60);
-            const s = timeLeft % 60;
-            document.getElementById('timer-display').innerHTML = 
-                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            const minutes = Math.floor(state.timeLeft / 60);
+            const seconds = state.timeLeft % 60;
+            const displayElement = document.getElementById('timer-display');
+            displayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
+        // ============================================
+        // TIMER LOGIC
+        // ============================================
         function startTimer() {
-            if (timerId) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            timerId = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
+            if (state.timerId) return; // Prevent multiple timers
+
+            if (state.audioCtx && state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+
+            state.timerId = setInterval(() => {
+                if (state.timeLeft > 0) {
+                    state.timeLeft--;
                     updateDisplay();
                 } else {
-                    clearInterval(timerId);
-                    timerId = null;
+                    clearInterval(state.timerId);
+                    state.timerId = null;
                     playFinishSound();
+                    localStorage.removeItem('timerState');
                     setTimeout(() => {
-                        alert("Time Up!");
+                        alert('Time Up!');
                     }, 500);
                 }
-            }, 1000);
+            }, CONFIG.timerInterval);
         }
 
         function resetTimer() {
-            clearInterval(timerId);
-            timerId = null;
-            timeLeft = 420;
+            clearInterval(state.timerId);
+            state.timerId = null;
+            state.timeLeft = CONFIG.timerDuration;
             updateDisplay();
+            localStorage.removeItem('timerState');
         }
+
+        // ============================================
+        // KEYBOARD CONTROLS
+        // ============================================
+        window.addEventListener('keydown', (e) => {
+            // Spacebar picks number
+            if (e.code === 'Space') {
+                e.preventDefault();
+                pickNumber();
+                if (state.audioCtx && state.audioCtx.state === 'suspended') {
+                    state.audioCtx.resume();
+                }
+            }
+
+            // Shift key shows cursor
+            if (e.key === 'Shift') {
+                document.body.classList.add('show-cursor');
+            }
+
+            // Enter starts/pauses timer
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (state.timerId) {
+                    clearInterval(state.timerId);
+                    state.timerId = null;
+                } else {
+                    startTimer();
+                }
+            }
+
+            // R resets timer
+            if (e.key === 'r' || e.key === 'R') {
+                resetTimer();
+            }
+
+            // F toggles fullscreen
+            if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+            }
+        }, true);
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') {
+                document.body.classList.remove('show-cursor');
+            }
+        }, true);
+
+        // ============================================
+        // FULLSCREEN LOGIC
+        // ============================================
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+            if (!state.isFullscreen) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+                state.isFullscreen = true;
+                fullscreenBtn.textContent = '⛶ Exit Fullscreen';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                state.isFullscreen = false;
+                fullscreenBtn.textContent = '⛶ Fullscreen';
+            }
+        }
+
+        // Update fullscreen button text when fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            state.isFullscreen = !!document.fullscreenElement;
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            fullscreenBtn.textContent = state.isFullscreen ? '⛶ Exit Fullscreen' : '⛶ Fullscreen';
+        });
+
+        // Keyboard shortcuts info
+        console.log('Keyboard shortcuts:');
+        console.log('- Spacebar: Generate random number');
+        console.log('- Enter: Start/Pause timer');
+        console.log('- R: Reset timer');
+        console.log('- F: Toggle fullscreen');
+        console.log('- Shift: Show cursor');
     </script>
 </body>
 </html>
