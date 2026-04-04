@@ -1,0 +1,17 @@
+{
+  "name": "1-12 Gen & 7 Min Timer",
+  "short_name": "RNG Timer",
+  "description": "A random number generator (1-12) and 7-minute timer application",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#f0f2f5",
+  "icons": [
+    {
+      "src": "rng.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
