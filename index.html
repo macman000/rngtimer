@@ -35,11 +35,7 @@
             }
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: sans-serif;
@@ -51,20 +47,10 @@
             color: var(--color-text-light);
         }
 
-        body.show-cursor {
-            cursor: default !important;
-        }
+        body.show-cursor { cursor: default !important; }
+        body.show-cursor button { cursor: pointer !important; }
 
-        body.show-cursor button {
-            cursor: pointer !important;
-        }
-
-        main {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+        main { display: flex; width: 100%; height: 100%; position: relative; }
 
         .half {
             flex: 1;
@@ -76,10 +62,7 @@
             padding: 20px;
         }
 
-        #left {
-            background-color: var(--color-bg-light);
-            border-right: 4px solid var(--color-primary);
-        }
+        #left { background-color: var(--color-bg-light); border-right: 4px solid var(--color-primary); }
 
         #display {
             font-size: clamp(120px, 25vw, 250px);
@@ -89,10 +72,7 @@
             line-height: 1;
         }
 
-        #right {
-            background-color: var(--color-bg-dark);
-            color: var(--color-text-dark);
-        }
+        #right { background-color: var(--color-bg-dark); color: var(--color-text-dark); }
 
         #timer-display {
             font-size: clamp(80px, 20vw, 180px);
@@ -115,28 +95,12 @@
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: var(--color-button-hover);
-        }
+        button:hover { background-color: var(--color-button-hover); }
+        button:active { transform: scale(0.95); }
+        button:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
-        button:active {
-            transform: scale(0.95);
-        }
-
-        button:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-
-        #right button {
-            border-color: var(--color-text-dark);
-            background: #333;
-            color: var(--color-text-dark);
-        }
-
-        #right button:hover {
-            background-color: #444;
-        }
+        #right button { border-color: var(--color-text-dark); background: #333; color: var(--color-text-dark); }
+        #right button:hover { background-color: #444; }
 
         .label {
             font-size: clamp(18px, 3vw, 24px);
@@ -145,12 +109,7 @@
             letter-spacing: 1px;
         }
 
-        .button-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        .button-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
         #fullscreen-btn {
             position: fixed;
@@ -160,56 +119,84 @@
             font-size: 18px;
             z-index: 1000;
             background: var(--color-button-bg);
-            border-color: var(--color-button-border);
             color: var(--color-text-light);
             border: 2px solid var(--color-button-border);
             border-radius: 8px;
         }
 
-        #right #fullscreen-btn {
-            background: #333;
-            border-color: var(--color-text-dark);
-            color: var(--color-text-dark);
-        }
+        #right #fullscreen-btn { background: #333; border-color: var(--color-text-dark); color: var(--color-text-dark); }
 
         @media (max-width: 768px) {
-            .half {
-                padding: 10px;
-            }
-
-            #display {
-                margin: 15px 0;
-            }
-
-            #timer-display {
-                margin: 15px 0;
-            }
-
-            button {
-                padding: 20px 40px;
-            }
-
-            .button-container {
-                gap: 5px;
-            }
-
-            #left,
-            #right {
-                border-right: none;
-                border-bottom: 4px solid var(--color-primary);
-            }
-
-            main {
-                flex-direction: column;
-            }
+            .half { padding: 10px; }
+            #display { margin: 15px 0; }
+            #timer-display { margin: 15px 0; }
+            button { padding: 20px 40px; }
+            .button-container { gap: 5px; }
+            #left, #right { border-right: none; border-bottom: 4px solid var(--color-primary); }
+            main { flex-direction: column; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            * {
-                transition: none !important;
-                animation: none !important;
-            }
+            * { transition: none !important; animation: none !important; }
         }
+
+        /* ============================================
+           INSTALL BANNER
+        ============================================ */
+        #install-banner {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #222;
+            color: #fff;
+            padding: 18px 24px;
+            border-radius: 14px;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            max-width: 340px;
+            width: calc(100% - 40px);
+            font-family: sans-serif;
+            cursor: default;
+        }
+
+        #install-banner.visible { display: flex; }
+
+        #install-banner p { font-size: 15px; line-height: 1.5; margin: 0; }
+        #install-banner strong { font-size: 16px; display: block; margin-bottom: 3px; }
+
+        .install-btns { display: flex; gap: 10px; justify-content: center; width: 100%; }
+
+        #install-yes {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            background: #fff;
+            color: #000;
+            cursor: pointer;
+            font-family: sans-serif;
+        }
+        #install-yes:hover { background: #ddd; }
+
+        #install-no {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid #555;
+            background: transparent;
+            color: #bbb;
+            cursor: pointer;
+            font-family: sans-serif;
+        }
+        #install-no:hover { background: #333; }
     </style>
 </head>
 <body>
@@ -231,76 +218,116 @@
         </section>
     </main>
 
+    <div id="install-banner" role="dialog" aria-label="Install app">
+        <p id="install-msg">
+            <strong>Install this app?</strong>
+            Use it anytime without a browser.
+        </p>
+        <div class="install-btns">
+            <button id="install-yes">Install</button>
+            <button id="install-no">No thanks</button>
+        </div>
+    </div>
+
     <script>
         // ============================================
         // CONFIGURATION
         // ============================================
         const CONFIG = {
-            timerDuration: 420, // 7 minutes in seconds
-            timerInterval: 1000, // 1 second
-            soundFrequency: 440, // Hz
-            soundDuration: 1, // seconds
+            timerDuration: 420,
+            timerInterval: 1000,
+            soundFrequency: 440,
+            soundDuration: 1,
             soundGain: 0.1,
         };
 
         // ============================================
-        // STATE MANAGEMENT
+        // STATE
         // ============================================
         const state = {
             timeLeft: CONFIG.timerDuration,
             timerId: null,
             audioCtx: null,
             isFullscreen: false,
+            deferredPrompt: null,
         };
 
         // ============================================
-        // INITIALIZATION
+        // INSTALL BANNER
+        // ============================================
+        const isStandalone =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
+
+        const isSafariIOS =
+            /iP(hone|od|ad)/.test(navigator.userAgent) &&
+            /WebKit/.test(navigator.userAgent) &&
+            !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);
+
+        const banner = document.getElementById('install-banner');
+        const installMsg = document.getElementById('install-msg');
+
+        function showBanner() {
+            if (isStandalone) return;
+            if (localStorage.getItem('installDismissed')) return;
+
+            if (isSafariIOS) {
+                // Safari can't use the prompt, show share instructions instead
+                installMsg.innerHTML = '<strong>Install this app!</strong>Tap <strong>Share ↑</strong> then <strong>"Add to Home Screen"</strong>.';
+                document.getElementById('install-yes').style.display = 'none';
+                document.getElementById('install-no').textContent = 'Got it';
+            }
+
+            banner.classList.add('visible');
+        }
+
+        // Capture Chrome/Edge native prompt if available
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            state.deferredPrompt = e;
+        });
+
+        // Show banner after 1.5s regardless of whether beforeinstallprompt fired
+        window.addEventListener('load', () => {
+            setTimeout(showBanner, 1500);
+        });
+
+        document.getElementById('install-yes').addEventListener('click', async () => {
+            banner.classList.remove('visible');
+            if (state.deferredPrompt) {
+                // Chrome/Edge: trigger the real install
+                state.deferredPrompt.prompt();
+                await state.deferredPrompt.userChoice;
+                state.deferredPrompt = null;
+            } else {
+                // Firefox / other: no prompt available, just close
+            }
+        });
+
+        document.getElementById('install-no').addEventListener('click', () => {
+            banner.classList.remove('visible');
+            localStorage.setItem('installDismissed', 'true');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            banner.classList.remove('visible');
+        });
+
+        // ============================================
+        // AUDIO
         // ============================================
         function initAudioContext() {
             try {
                 if (!state.audioCtx) {
                     state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
-            } catch (error) {
-                console.error('AudioContext initialization failed:', error);
-            }
+            } catch (e) { console.error(e); }
         }
-
-        // Initialize audio context on first user interaction
         document.addEventListener('click', initAudioContext);
         document.addEventListener('keydown', initAudioContext);
 
-        // Restore timer state from localStorage
-        window.addEventListener('load', () => {
-            const savedState = localStorage.getItem('timerState');
-            if (savedState) {
-                try {
-                    const parsed = JSON.parse(savedState);
-                    state.timeLeft = parsed.timeLeft || CONFIG.timerDuration;
-                    updateDisplay();
-                } catch (error) {
-                    console.error('Failed to restore timer state:', error);
-                }
-            }
-        });
-
-        // Save timer state periodically
-        setInterval(() => {
-            localStorage.setItem('timerState', JSON.stringify({
-                timeLeft: state.timeLeft,
-                timestamp: Date.now(),
-            }));
-        }, 1000);
-
-        // ============================================
-        // SOUND LOGIC
-        // ============================================
         function playFinishSound() {
-            if (!state.audioCtx) {
-                console.warn('AudioContext not available for sound playback');
-                return;
-            }
-
+            if (!state.audioCtx) return;
             try {
                 const osc = state.audioCtx.createOscillator();
                 const gain = state.audioCtx.createGain();
@@ -312,43 +339,52 @@
                 gain.gain.exponentialRampToValueAtTime(0.0001, state.audioCtx.currentTime + CONFIG.soundDuration);
                 osc.start();
                 osc.stop(state.audioCtx.currentTime + CONFIG.soundDuration);
-            } catch (error) {
-                console.error('Error playing finish sound:', error);
-            }
+            } catch (e) { console.error(e); }
         }
 
         // ============================================
-        // NUMBER GENERATOR LOGIC
+        // TIMER STATE PERSISTENCE
+        // ============================================
+        window.addEventListener('load', () => {
+            const savedState = localStorage.getItem('timerState');
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+                    state.timeLeft = parsed.timeLeft || CONFIG.timerDuration;
+                    updateDisplay();
+                } catch (e) { console.error(e); }
+            }
+        });
+
+        setInterval(() => {
+            localStorage.setItem('timerState', JSON.stringify({
+                timeLeft: state.timeLeft,
+                timestamp: Date.now(),
+            }));
+        }, 1000);
+
+        // ============================================
+        // NUMBER GENERATOR
         // ============================================
         function pickNumber() {
             const num = Math.floor(Math.random() * 12) + 1;
-            const displayElement = document.getElementById('display');
-            displayElement.textContent = num;
-
-            // Save to localStorage
+            document.getElementById('display').textContent = num;
             localStorage.setItem('lastNumber', num);
         }
 
         // ============================================
-        // DISPLAY LOGIC
+        // TIMER
         // ============================================
         function updateDisplay() {
-            const minutes = Math.floor(state.timeLeft / 60);
-            const seconds = state.timeLeft % 60;
-            const displayElement = document.getElementById('timer-display');
-            displayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const m = Math.floor(state.timeLeft / 60);
+            const s = state.timeLeft % 60;
+            document.getElementById('timer-display').textContent =
+                `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
-        // ============================================
-        // TIMER LOGIC
-        // ============================================
         function startTimer() {
-            if (state.timerId) return; // Prevent multiple timers
-
-            if (state.audioCtx && state.audioCtx.state === 'suspended') {
-                state.audioCtx.resume();
-            }
-
+            if (state.timerId) return;
+            if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
             state.timerId = setInterval(() => {
                 if (state.timeLeft > 0) {
                     state.timeLeft--;
@@ -358,9 +394,7 @@
                     state.timerId = null;
                     playFinishSound();
                     localStorage.removeItem('timerState');
-                    setTimeout(() => {
-                        alert('Time Up!');
-                    }, 500);
+                    setTimeout(() => alert('Time Up!'), 500);
                 }
             }, CONFIG.timerInterval);
         }
@@ -374,106 +408,64 @@
         }
 
         // ============================================
-        // KEYBOARD CONTROLS
+        // KEYBOARD
         // ============================================
         window.addEventListener('keydown', (e) => {
-            // Spacebar picks number
             if (e.code === 'Space') {
                 e.preventDefault();
                 pickNumber();
-                if (state.audioCtx && state.audioCtx.state === 'suspended') {
-                    state.audioCtx.resume();
-                }
+                if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
             }
-
-            // Shift key shows cursor
-            if (e.key === 'Shift') {
-                document.body.classList.add('show-cursor');
-            }
-
-            // Enter starts/pauses timer
+            if (e.key === 'Shift') document.body.classList.add('show-cursor');
             if (e.key === 'Enter') {
                 e.preventDefault();
-                if (state.timerId) {
-                    clearInterval(state.timerId);
-                    state.timerId = null;
-                } else {
-                    startTimer();
-                }
+                if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
+                else startTimer();
             }
-
-            // R resets timer
-            if (e.key === 'r' || e.key === 'R') {
-                resetTimer();
-            }
-
-            // F toggles fullscreen
-            if (e.key === 'f' || e.key === 'F') {
-                toggleFullscreen();
-            }
+            if (e.key === 'r' || e.key === 'R') resetTimer();
+            if (e.key === 'f' || e.key === 'F') toggleFullscreen();
         }, true);
 
         window.addEventListener('keyup', (e) => {
-            if (e.key === 'Shift') {
-                document.body.classList.remove('show-cursor');
-            }
+            if (e.key === 'Shift') document.body.classList.remove('show-cursor');
         }, true);
 
         // ============================================
-        // FULLSCREEN LOGIC
+        // FULLSCREEN
         // ============================================
         function toggleFullscreen() {
             const elem = document.documentElement;
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-
             if (!state.isFullscreen) {
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                } else if (elem.mozRequestFullScreen) {
-                    elem.mozRequestFullScreen();
-                } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
-                }
+                if (elem.requestFullscreen) elem.requestFullscreen();
+                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+                else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
+                else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
                 state.isFullscreen = true;
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
                 state.isFullscreen = false;
             }
         }
 
-        // Update fullscreen button on fullscreen change
         document.addEventListener('fullscreenchange', () => {
             state.isFullscreen = !!document.fullscreenElement;
         });
 
-        // Keyboard shortcuts info
-        console.log('Keyboard shortcuts:');
-        console.log('- Spacebar: Generate random number');
-        console.log('- Enter: Start/Pause timer');
-        console.log('- R: Reset timer');
-        console.log('- F: Toggle fullscreen');
-        console.log('- Shift: Show cursor');
-
         // ============================================
-        // SERVICE WORKER REGISTRATION
+        // SERVICE WORKER
         // ============================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker registered:', reg.scope))
-                    .catch(err => console.error('Service Worker registration failed:', err));
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.error('SW failed:', err));
             });
         }
+
+        console.log('Keyboard shortcuts: Space=number, Enter=start/pause, R=reset, F=fullscreen, Shift=cursor');
     </script>
 </body>
 </html>
